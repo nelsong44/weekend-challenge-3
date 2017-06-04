@@ -54,10 +54,30 @@ $(document).ready(function() {
             success: function(response) {
               console.log('task to be deleted sent to server');
             } // end success
-          }); // end ajax
-        }); // end deleteTask()
+           }); // end ajax
+       }); // end deleteTask()
 
-        
+       // function to change status of task in db based on status of checkbox
+       $('.output').on('click', '#checkbox', function() {
+         if(document.getElementById('checkbox').checked) {
+           var update = $(this).siblings().attr('id');
+           console.log(update);
+             // object to send
+             var updateStatus = {
+               status: update
+             }; // end object
+             console.log(updateStatus);
+             $.ajax({
+               type: 'POST',
+               url: '/changeStatus',
+               data: updateStatus,
+               success: function(response) {
+                 console.log('server received task status to update: ' + response);
+               } //end success
+             }); //end ajax
+         } //end if
+       }); //end click
+
       } // end success
     }); // end ajax
   } // end getTasks()
