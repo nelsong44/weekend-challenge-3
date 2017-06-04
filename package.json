@@ -1,0 +1,19 @@
+{
+  "name": "weekend-challenge-3",
+  "version": "1.0.0",
+  "description": "weekend challenge 3",
+  "main": "public",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Miles Nelson",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-router": "0.0.1",
+    "jquery": "^3.2.1",
+    "pg": "^6.2.3"
+  }
+}
