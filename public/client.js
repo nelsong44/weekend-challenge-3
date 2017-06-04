@@ -2,17 +2,18 @@ $(document).ready(function() {
   console.log('js linked');
   //display tasks currently in db on DOM on page load
   getTasks();
-  // call createNewTask on click
-  $('#newTaskButton').on('click', createNewTask);
-
-// function to send new task inputted by user to db
-function createNewTask() {
+  // function to send new task inputted by user to db and display on DOM
+  $('#newTaskButton').on('click', function () {
+      // display user-input on DOM immediately after click
+      $('.output').append('<p class="singleTask"><input id="checkbox" type="checkbox">' + '  ' + '<button id="delete" type="button">Delete</button> ' + $('#newTask').val() + '</p>');
+      // clear input after button click
+      document.getElementById('newTask').value= '';
   //task object
   var newTaskObject = {
     task: $('#newTask').val()
   }; // end object
   console.log('new task: ' + $('#newTask').val());
-// request to send new task to server to store in db
+  // request to send new task to server to store in db
   $.ajax({
     type: 'POST',
     url: '/newTask',
@@ -21,49 +22,47 @@ function createNewTask() {
       console.log('new task received by server: ' + response);
     } // end success
   }); // end ajax
-} // end createNewTask()
+  }); // end on click
 
-// function to retrieve tasks from db
-function getTasks(){
-  $.ajax({
-    type: 'GET',
-    url: '/taskList',
-    success: function(response) {
-      console.log(response);
-      console.log('array of tasks arrived at client');
-      // dynamically add checkboxes and deletes to task items as they are added
-      for (var i = 0; i < response.length; i++) {
-        $('.output').append('<p id="singleItem"> <input id="checkbox" type="checkbox">' + " " + response[i].task + " " +
-        '<button id="delete" type="button">Delete</button></p>');
-      } // end for loop
-      // delete specific task item and remove from db on delete click
-      $('.output').on('click', '#delete', function() {
-        $('#singleItem').remove();
-      }); // end delete click
-    } // end success
-  }); // end ajax
-} // end getTasks()
+  // function to retrieve tasks from db
+  function getTasks(){
+    $.ajax({
+      type: 'GET',
+      url: '/taskList',
+      success: function(response) {
+        console.log(response);
+        console.log('array of tasks arrived at client');
+        // dynamically add checkboxes and deletes to task items as they are added by user
+        for (var i = 0; i < response.length; i++) {
+          $('.output').append('<p class="singleTask"> <input id="checkbox" type="checkbox">' + ' ' + '<button class="delete" id="' + response[i].task + '" type="button">Delete</button>' + ' ' + response[i].task + '</p>');
+        } // end for loop
+      // function to delete task from DOM and db on delete click
+      $('.output').on('click', '.delete', function() {
+        $(this).parent().remove();
+        var item = $(this).attr('id');
+          // object to send
+          var taskToDelete = {
+            delete: item
+          }; // end object
+          console.log(taskToDelete);
+          // request to send task to server to be deleted from db
+          $.ajax({
+            type: 'POST',
+            url: '/deleteTask',
+            data: taskToDelete,
+            success: function(response) {
+              console.log('task to be deleted sent to server');
+            } // end success
+          }); // end ajax
+        }); // end deleteTask()
+      } // end success
+    }); // end ajax
+  } // end getTasks()
+
 
 }); // end onReady
 
-
-// use this?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//---------------------------------------------------------
 // Here are the specific components for the challenge:
 //
 // Create a front end experience (e.g. a form) that allows a user to create a Task.

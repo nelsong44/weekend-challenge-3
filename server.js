@@ -42,9 +42,9 @@ app.post('/newTask', function(req, res) {
       }
     else {
       var taskIntoDb = connection.query("INSERT INTO to_do_table (task) VALUES ('" + req.body.task + "')");
-      console.log('task successfully stored in db');
+      console.log('task successfully stored in db and added to DOM');
       done();
-      res.send('task successfully stored in db');
+      res.send('task successfully stored in db and added to DOM');
     } // end if statement
 }); // end pool connect
 }); //end post
@@ -74,6 +74,27 @@ app.get('/taskList', function(req, res) {
   }); // end pool connect
 }); // end get
 
+//request to retrieve task from client to delete from db
+app.post('/deleteTask', function(req, res) {
+  console.log('deleting task from db');
+  pool.connect( function( err , connection , done ){
+    if (err){
+      console.log('error in connection', err);
+      done();
+      res.send( 400 );
+      }
+    else { 
+      console.log(req.body);
+      var deleteFromDb = connection.query("DELETE FROM to_do_table WHERE(task = '" + req.body.delete + "')");
+      console.log('task successfully deleted from db');
+      done();
+      res.send('task successfully deleted from db');
+    } // end if statement
+}); // end pool connect
+}); // end post
+
+// if(checbox) {
+// UPDATE todotable WHERE complete = 'null' VALUES(true);
 
 //------------------------------------------------------------------
 //app.gets and app.posts to access route files
