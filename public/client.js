@@ -6,25 +6,25 @@ $(document).ready(function() {
   $('#newTaskButton').on('click', function () {
       // display user-input on DOM immediately after click
       $('.output').append('<p class="singleTask"><input id="checkbox" type="checkbox">' + '  ' + '<button id="delete" type="button">Delete</button> ' + $('#newTask').val() + '</p>');
-      // clear input after button click
-      document.getElementById('newTask').value= '';
-  //task object
-  var newTaskObject = {
-    task: $('#newTask').val()
-  }; // end object
-  console.log('new task: ' + $('#newTask').val());
-  // request to send new task to server to store in db
-  $.ajax({
-    type: 'POST',
-    url: '/newTask',
-    data: newTaskObject,
-    success: function(response) {
-      console.log('new task received by server: ' + response);
-    } // end success
-  }); // end ajax
+    //task object
+    var newTaskObject = {
+      task: $('#newTask').val()
+    }; // end object
+    console.log('new task: ' + $('#newTask').val());
+    // request to send new task to server to store in db
+    $.ajax({
+      type: 'POST',
+      url: '/newTask',
+      data: newTaskObject,
+      success: function(response) {
+        console.log('new task received by server: ' + response);
+        // clear input after button click
+        document.getElementById('newTask').value= '';
+      } // end success
+    }); // end ajax
   }); // end on click
 
-  // function to retrieve tasks from db
+  // function to retrieve tasks from db, delete tasks from db, update status in db
   function getTasks(){
     $.ajax({
       type: 'GET',
@@ -36,6 +36,7 @@ $(document).ready(function() {
         for (var i = 0; i < response.length; i++) {
           $('.output').append('<p class="singleTask"> <input id="checkbox" type="checkbox">' + ' ' + '<button class="delete" id="' + response[i].task + '" type="button">Delete</button>' + ' ' + response[i].task + '</p>');
         } // end for loop
+
       // function to delete task from DOM and db on delete click
       $('.output').on('click', '.delete', function() {
         $(this).parent().remove();
@@ -55,6 +56,8 @@ $(document).ready(function() {
             } // end success
           }); // end ajax
         }); // end deleteTask()
+
+        
       } // end success
     }); // end ajax
   } // end getTasks()

@@ -83,7 +83,7 @@ app.post('/deleteTask', function(req, res) {
       done();
       res.send( 400 );
       }
-    else { 
+    else {
       console.log(req.body);
       var deleteFromDb = connection.query("DELETE FROM to_do_table WHERE(task = '" + req.body.delete + "')");
       console.log('task successfully deleted from db');
@@ -93,11 +93,26 @@ app.post('/deleteTask', function(req, res) {
 }); // end pool connect
 }); // end post
 
-// if(checbox) {
-// UPDATE todotable WHERE complete = 'null' VALUES(true);
+//request to change status of task
+// app.post('/changeStatus', function(req,res) {
+//   console.log('changing task status');
+//   pool.connect(function(err, connection, done){
+//     if (err){
+//       console.log('error in connection', err);
+//       done();
+//       res.send( 400 );
+//       }
+//     else {
+//       console.log(req.body);
+//       var updateStatus = connection.query("UPDATE to_do_table SET complete = 'complete' WHERE(complete = '" + req.body.complete + "')");
+//       console.log('task status changed in db');
+//       done();
+//       res.send('task status changed in db');
+//     } // end if statement
+//   }); // end pool connect
+// }); // end post
 
-//------------------------------------------------------------------
-//app.gets and app.posts to access route files
+
 
 // Here are the specific components for the challenge:
 //
