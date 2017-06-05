@@ -1,13 +1,10 @@
 $(document).ready(function() {
   console.log('js linked');
   //display tasks currently in db on DOM on page load
-  getTasks();
+  // getTasks();
 
   // function to send new task inputted by user to db and display on DOM
   $('#newTaskButton').on('click', function () {
-      // display user-input on DOM immediately after click
-      $('.output').append('<p class="singleTask"><input id="checkbox" type="checkbox">' + '  ' + '<button id="delete" type="button">Delete</button> ' + $('#newTask').val() + '</p>');
-    //task object
     var newTaskObject = {
       task: $('#newTask').val()
     }; // end object
@@ -15,12 +12,13 @@ $(document).ready(function() {
     // request to send new task to server to store in db
     $.ajax({
       type: 'POST',
-      url: '/newTask',
+      url: '/task',
       data: newTaskObject,
       success: function(response) {
         console.log('new task received by server: ' + response);
         // clear input after button click
         document.getElementById('newTask').value= '';
+        getTasks();
       } // end success
     }); // end ajax
   }); // end on click
@@ -29,13 +27,13 @@ $(document).ready(function() {
   function getTasks(){
     $.ajax({
       type: 'GET',
-      url: '/taskList',
+      url: '/task',
       success: function(response) {
         console.log(response);
         console.log('array of tasks arrived at client');
         // dynamically add checkboxes and deletes to task items as they are added by user
         for (var i = 0; i < response.length; i++) {
-          $('.output').append('<p class="singleTask"> <input id="checkbox" type="checkbox">' + ' ' + '<button class="delete" id="' + response[i].task + '" type="button">Delete</button>' + ' ' + response[i].task + '</p>');
+          $('.output').append('<p class="singleTask"> <input id="checkbox" data-id="' + response[i].id + '" type="checkbox">' + ' ' + '<button class="delete" id="' + response[i].id + '" type="button">Delete</button>' + ' ' + response[i].task + '</p>');
         } // end for loop
 
       // function to delete task from DOM and db on delete click
@@ -49,8 +47,8 @@ $(document).ready(function() {
           console.log(taskToDelete);
           // request to send task to server to be deleted from db
           $.ajax({
-            type: 'POST',
-            url: '/eraseTask',
+            type: 'DELETE',
+            url: '/task',
             data: taskToDelete,
             success: function(response) {
               console.log('task to be deleted sent to server');
@@ -61,41 +59,23 @@ $(document).ready(function() {
        // function to change status of task in db based on status of checkbox
        $('.output').on('click', '#checkbox', function() {
          $(this).parent().toggleClass('statusColorChange');
-         if(document.getElementById('checkbox').checked) {
-           var update = $(this).siblings().attr('id');
+           var update = $(this).data('id');
            console.log(update);
              // object to send
              var updateStatus = {
                status: update,
-               complete: 'complete'
+               complete: $(this)[0].checked
              }; // end object
              console.log(updateStatus);
              $.ajax({
-               type: 'POST',
-               url: '/changeStatus',
+               type: 'PUT',
+               url: '/task',
                data: updateStatus,
                success: function(response) {
                  console.log('server received task status to update: ' + response);
                } //end success
              }); //end ajax
-          } //end if
-          else {
-            var diffUpdate = $(this).siblings().attr('id');
-            //object to send
-            var upStatus = {
-              status: diffUpdate,
-              complete: null
-            }; // end object
-            console.log(upStatus);
-            $.ajax({
-              type: 'POST',
-              url: '/changeStatus',
-              data: upStatus,
-              success: function(response) {
-                console.log('server received task status to update: ' + response);
-              } //end success
-            }); // end ajax
-           } // end else
+
        }); //end click
       } // end success
     }); // end ajax
