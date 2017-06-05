@@ -60,6 +60,7 @@ $(document).ready(function() {
 
        // function to change status of task in db based on status of checkbox
        $('.output').on('click', '#checkbox', function() {
+         $(this).parent().toggleClass('statusColorChange');
          if(document.getElementById('checkbox').checked) {
            var update = $(this).siblings().attr('id');
            console.log(update);
