@@ -50,7 +50,7 @@ $(document).ready(function() {
           // request to send task to server to be deleted from db
           $.ajax({
             type: 'POST',
-            url: '/deleteTask',
+            url: '/eraseTask',
             data: taskToDelete,
             success: function(response) {
               console.log('task to be deleted sent to server');
@@ -65,7 +65,8 @@ $(document).ready(function() {
            console.log(update);
              // object to send
              var updateStatus = {
-               status: update
+               status: update,
+               complete: 'complete'
              }; // end object
              console.log(updateStatus);
              $.ajax({
@@ -76,7 +77,24 @@ $(document).ready(function() {
                  console.log('server received task status to update: ' + response);
                } //end success
              }); //end ajax
-         } //end if
+          } //end if
+          else {
+            var diffUpdate = $(this).siblings().attr('id');
+            //object to send
+            var upStatus = {
+              status: diffUpdate,
+              complete: null
+            }; // end object
+            console.log(upStatus);
+            $.ajax({
+              type: 'POST',
+              url: '/changeStatus',
+              data: upStatus,
+              success: function(response) {
+                console.log('server received task status to update: ' + response);
+              } //end success
+            }); // end ajax
+           } // end else
        }); //end click
       } // end success
     }); // end ajax
